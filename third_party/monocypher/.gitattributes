@@ -1,0 +1,4 @@
+# Preserve vendored bytes and SHA256SUMS across platforms.
+monocypher*.c -text
+monocypher*.h -text
+LICENCE.md -text

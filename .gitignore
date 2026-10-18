@@ -1,0 +1,13 @@
+/build*/
+/.tools/
+/.cache/
+*.wav
+*.pcm
+*.bin
+*.elf
+*.map
+*.o
+*.obj
+*.pdb
+__pycache__/
+*.pyc

@@ -1,0 +1,30 @@
+name: C firmware verification
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  linux:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        compiler: [gcc, clang]
+        mode: [Debug, Release]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify vendored crypto
+        run: cd third_party/monocypher && sha256sum --check SHA256SUMS
+      - name: Configure
+        run: cmake -S . -B build -DCMAKE_C_COMPILER=${{ matrix.compiler }} -DCMAKE_BUILD_TYPE=${{ matrix.mode }} -DAV_SANITIZE=ON
+      - name: Build
+        run: cmake --build build --parallel
+      - name: Test
+        run: ctest --test-dir build --output-on-failure
+      - name: Compile Cortex-A7 objects
+        run: sh scripts/check-arm.sh
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and test
+        shell: pwsh
+        run: ./scripts/build.ps1 -Configuration Release
